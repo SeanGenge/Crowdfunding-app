@@ -1,5 +1,31 @@
 const router = require('express').Router();
-const { Project } = require('../../models');
+const { Project, User } = require('../../models');
+
+
+router.get('/', async (req, res) => {
+  try {
+    const getProject = await Project.findAll({
+      include: [{ model: User, attributes: ['name'], }],
+    });
+    res.status(200).json(getProject)
+  } catch (error) {
+    res.status(400).json({ message: `Get Project Error ${error}` })
+  }
+
+})
+
+router.get('/:id', async (req, res) => {
+  try {
+    const getOneProject = await Project.findByPk(
+      req.params.id,
+      { include: [{ model: User, attributes: ['name'], }], }
+    );
+    res.status(200).json(getOneProject)
+  } catch (error) {
+    res.status(400).json({ message: `Get One Project Error ${error}` })
+  }
+})
+
 
 router.post('/', async (req, res) => {
   try {
