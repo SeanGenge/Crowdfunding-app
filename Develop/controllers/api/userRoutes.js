@@ -1,6 +1,16 @@
 const router = require('express').Router();
 const { User } = require('../../models');
 
+router.get('/', async(req,res)=>{
+try {
+  const getUser = await User.findAll();
+ res.status(200).json(getUser)
+} catch (error) {
+  res.status(400).json({message:`Get user Error ${error}`})
+}
+
+})
+
 router.post('/', async (req, res) => {
   try {
     const userData = await User.create(req.body);
