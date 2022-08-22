@@ -1,27 +1,34 @@
 const router = require('express').Router();
-const { User , Project} = require('../../models');
+const { User, Project } = require('../../models');
 
-router.get('/', async(req,res)=>{
+router.get('/', async (req, res) => {
   try {
-    const getUser = await User.findAll({
-      include:[{model:Project}]
-    });
-   res.status(200).json(getUser)
+    const getUser = await User.findAll(
+      {
+        include: [{ model: Project }],
+        attributes: {
+          exclude: ['password']
+        }
+      });
+    res.status(200).json(getUser)
   } catch (error) {
-    res.status(400).json({message:`Get user Error ${error}`})
+    res.status(400).json({ message: `Get user Error ${error}` })
   }
-  
+
 })
 
-router.get('/:id', async(req,res)=>{
+router.get('/:id', async (req, res) => {
   try {
     const getOneUser = await User.findByPk(
       req.params.id,
-      {include:[{model:Project}]}
+      {
+        include: [{ model: Project }],
+        attributes: { exclude: ['password'] },
+      }
     );
-   res.status(200).json(getOneUser)
+    res.status(200).json(getOneUser)
   } catch (error) {
-    res.status(400).json({message:`Get user Error ${error}`})
+    res.status(400).json({ message: `Get user Error ${error}` })
   }
 })
 
@@ -63,7 +70,7 @@ router.post('/login', async (req, res) => {
     req.session.save(() => {
       req.session.user_id = userData.id;
       req.session.logged_in = true;
-      
+
       res.json({ user: userData, message: 'You are now logged in!' });
     });
 
